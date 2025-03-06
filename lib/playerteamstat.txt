@@ -1,0 +1,221 @@
+
+
+// import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
+
+// class Stats extends StatefulWidget {
+//   const Stats({super.key});
+
+//   @override
+//   _StatsState createState() => _StatsState();
+// }
+
+// class _StatsState extends State<Stats> {
+//   bool showTeamStats = true;
+//   List<dynamic> standings = [];
+//   List<dynamic> playerStats = [];
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     fetchStats();
+//   }
+
+//   Future<void> fetchStats() async {
+//     final url = Uri.parse(
+//       "https://api-american-football.p.rapidapi.com/standings?league=1&season=2022",
+//     );
+//     final response = await http.get(
+//       url,
+//       headers: {
+//         "x-rapidapi-key": "YOUR_API_KEY",
+//         "x-rapidapi-host": "api-american-football.p.rapidapi.com",
+//       },
+//     );
+
+//     if (response.statusCode == 200) {
+//       final Map<String, dynamic> data = json.decode(response.body);
+//       setState(() {
+//         standings = data['response'];
+//       });
+//     }
+//   }
+
+//   Future<void> fetchPlayerStats() async {
+//     final url = Uri.parse(
+//       "https://api-american-football.p.rapidapi.com/players/statistics?id=1&season=2022",
+//     );
+//     final response = await http.get(
+//       url,
+//       headers: {
+//         "x-rapidapi-key": "YOUR_API_KEY",
+//         "x-rapidapi-host": "api-american-football.p.rapidapi.com",
+//       },
+//     );
+
+//     if (response.statusCode == 200) {
+//       final Map<String, dynamic> data = json.decode(response.body);
+//       setState(() {
+//         playerStats = data['response'];
+//       });
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text("NFL Stats"),
+//         backgroundColor: Colors.transparent,
+//         flexibleSpace: Container(
+//           decoration: const BoxDecoration(
+//             gradient: LinearGradient(
+//               colors: [
+//                 Colors.black,
+//                 Color(0xFF0A1931),
+//                 Colors.black,
+//               ],
+//               begin: Alignment.topLeft,
+//               end: Alignment.bottomRight,
+//             ),
+//           ),
+//         ),
+//         elevation: 0,
+//       ),
+//       body: Container(
+//         decoration: const BoxDecoration(
+//           gradient: LinearGradient(
+//             colors: [
+//               Colors.black,
+//               Color(0xFF0A1931),
+//               Colors.black,
+//             ],
+//             begin: Alignment.topLeft,
+//             end: Alignment.bottomRight,
+//           ),
+//         ),
+//         child: Column(
+//           children: [
+//             Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   _buildToggleButton("Team Stats", true),
+//                   const SizedBox(width: 10),
+//                   _buildToggleButton("Player Stats", false),
+//                 ],
+//               ),
+//             ),
+//             Expanded(
+//               child: showTeamStats ? buildTeamStats() : buildPlayerStats(),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildToggleButton(String title, bool isTeam) {
+//     bool isActive = (isTeam && showTeamStats) || (!isTeam && !showTeamStats);
+//     return ElevatedButton(
+//       onPressed: () {
+//         setState(() {
+//           showTeamStats = isTeam;
+//           if (!showTeamStats) fetchPlayerStats();
+//         });
+//       },
+//       style: ElevatedButton.styleFrom(
+//         backgroundColor: isActive ? Colors.red : Colors.white,
+//         foregroundColor: isActive ? Colors.white : Colors.blue,
+//         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//         textStyle: const TextStyle(fontWeight: FontWeight.bold),
+//       ),
+//       child: Text(title),
+//     );
+//   }
+
+//   Widget buildTeamStats() {
+//     return standings.isEmpty
+//         ? const Center(child: CircularProgressIndicator())
+//         : ListView.builder(
+//             padding: const EdgeInsets.all(10),
+//             itemCount: standings.length,
+//             itemBuilder: (context, index) {
+//               final team = standings[index]['team'];
+//               final record = standings[index];
+//               return Card(
+//                 elevation: 5,
+//                 margin: const EdgeInsets.symmetric(vertical: 8),
+//                 child: ListTile(
+//                   leading: Image.network(team['logo'], width: 50, height: 50),
+//                   title: Center(
+//                     child: Text(team['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+//                   ),
+//                   subtitle: Column(
+//                     children: [
+//                       Text("Position 🏆 ${record['position']}"),
+//                       Row(
+//                         mainAxisAlignment: MainAxisAlignment.center,
+//                         children: [
+//                           Text("Wins: ${record['won']} | ", style: const TextStyle(color: Colors.blue)),
+//                           Text("Losses: ${record['lost']}", style: const TextStyle(color: Colors.red)),
+//                         ],
+//                       ),
+//                     ],
+//                   ),
+//                   trailing: Column(
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     children: [
+//                       Text("Points: ${record['points']['for']}", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+//                       Text("Against: ${record['points']['against']}", style: TextStyle(color: Colors.yellow)),
+//                     ],
+//                   ),
+//                 ),
+//               );
+//             },
+//           );
+//   }
+
+//   Widget buildPlayerStats() {
+//     return playerStats.isEmpty
+//         ? const Center(child: CircularProgressIndicator())
+//         : ListView.builder(
+//             padding: const EdgeInsets.all(10),
+//             itemCount: playerStats.length,
+//             itemBuilder: (context, index) {
+//               final player = playerStats[index]['player'];
+//               final team = playerStats[index]['teams'][0]['team'];
+//               final stats = playerStats[index]['teams'][0]['groups'];
+
+//               return Card(
+//                 elevation: 5,
+//                 margin: const EdgeInsets.symmetric(vertical: 8),
+//                 child: ExpansionTile(
+//                   leading: Image.network(player['image'], width: 50, height: 50),
+//                   title: Text(player['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+//                   subtitle: Text(team['name']),
+//                   children: stats.map<Widget>((group) {
+//                     return Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Padding(
+//                           padding: const EdgeInsets.all(8.0),
+//                           child: Text(group['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+//                         ),
+//                         ...group['statistics'].map<Widget>((stat) {
+//                           return ListTile(
+//                             title: Text(stat['name']),
+//                             trailing: Text(stat['value'] ?? 'N/A'),
+//                           );
+//                         }).toList(),
+//                       ],
+//                     );
+//                   }).toList(),
+//                 ),
+//               );
+//             },
+//           );
+//   }
+// }
