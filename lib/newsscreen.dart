@@ -13,7 +13,9 @@ class NewsService {
     if (_cachedNews != null) {
       return _cachedNews!;
     }
-    final url = Uri.parse("https://securepayments.live/nflfomodev/nfl_news.json");
+    final url = Uri.parse(
+      "https://securepayments.live/nflfomodev/nfl_news.json",
+    );
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -44,6 +46,8 @@ class _NewsScreenState extends State<NewsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text("NFL News", style: TextStyle(fontFamily: 'baseball')),
@@ -99,7 +103,7 @@ class _NewsScreenState extends State<NewsScreen> {
                           child: Image.network(
                             imageUrl,
                             width: double.infinity,
-                            height: 180,
+                            height: screenHeight * 0.23,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -109,14 +113,14 @@ class _NewsScreenState extends State<NewsScreen> {
                           child: BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                             child: Container(
-                              height: 180,
+                              height: screenHeight * 0.23,
                               color: Colors.black.withOpacity(0.3),
                             ),
                           ),
                         ),
                       Container(
                         padding: const EdgeInsets.all(10),
-                        height: 180,
+                        height: screenHeight * 0.23,
                         alignment: Alignment.bottomLeft,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
