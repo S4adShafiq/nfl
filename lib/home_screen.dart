@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0; // Default tab (News)
+  int _selectedIndex = 2; // Default tab (News)
   late PageController _pageController;
 
   @override
@@ -109,18 +109,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildNewsTab() {
-    return const Center(
-      child: Text(
-        "Latest News",
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
 
   Widget _buildSlantedNavBar() {
     return Container(
