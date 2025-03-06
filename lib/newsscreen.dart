@@ -158,7 +158,7 @@ class _NewsScreenState extends State<NewsScreen> {
                                   ),
                                 ],
                               ),
-                              maxLines: 4,
+                              maxLines: 6,
                               overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(height: 20),
